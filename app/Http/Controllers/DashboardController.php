@@ -60,8 +60,10 @@ class DashboardController extends Controller
         }
 
         // 5. Data Grafik Tren Kunjungan (Line Chart) - 7 hari terakhir
-        // SQLite compatible format
-        $trenKunjungan = Visitor::select(DB::raw("strftime('%Y-%m-%d', created_at) as date"), DB::raw('count(*) as total'))
+        $driver = DB::getDriverName();
+        $dateExpr = $driver === 'sqlite' ? "strftime('%Y-%m-%d', created_at)" : "DATE(created_at)";
+
+        $trenKunjungan = Visitor::select(DB::raw("{$dateExpr} as date"), DB::raw('count(*) as total'))
             ->groupBy('date')
             ->orderBy('date', 'asc')
             ->limit(7)
