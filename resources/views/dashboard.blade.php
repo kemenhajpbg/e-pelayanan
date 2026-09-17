@@ -12,7 +12,7 @@
             <span>Ekspor Laporan Excel / Spreadsheet</span>
         </h3>
         <p class="text-xs text-slate-300">
-            Kirimkan seluruh berkas rekapitulasi data buku tamu, berita tayang, serta surat masuk/keluar dalam format Excel ke email <span class="text-teal-400 font-bold">izzulhaq014@gmail.com</span>.
+            Kirimkan seluruh berkas rekapitulasi data buku tamu, berita tayang, serta laporan kinerja harian dalam format Excel ke email <span class="text-teal-400 font-bold">izzulhaq014@gmail.com</span>.
         </p>
     </div>
     <div class="flex flex-col sm:flex-row gap-3 w-full md:w-auto mt-4 md:mt-0">
@@ -61,29 +61,31 @@
         </div>
     </div>
 
-    <!-- Surat Masuk -->
-    <div class="bg-white rounded-3xl border border-slate-200/80 p-6 shadow-sm shadow-slate-100/50 flex items-center justify-between group hover:border-emerald-500/30 transition-all duration-300 transform hover:-translate-y-1">
+    <!-- Kinerja Hari Ini -->
+    <a href="{{ route('daily-reports.index', ['tab' => 'daily']) }}" 
+       class="bg-white rounded-3xl border border-slate-200/80 p-6 shadow-sm shadow-slate-100/50 flex items-center justify-between group hover:border-emerald-500/30 transition-all duration-300 transform hover:-translate-y-1 block">
         <div class="space-y-2">
-            <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Surat Masuk</span>
-            <div class="text-3xl font-extrabold text-slate-800 tracking-tight">{{ $totalLettersIn }}</div>
-            <p class="text-[10px] text-slate-500 font-medium">Surat diarsipkan</p>
+            <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Kinerja Hari Ini</span>
+            <div class="text-3xl font-extrabold text-slate-800 tracking-tight">{{ $totalReportsToday }}</div>
+            <p class="text-[10px] text-emerald-600 font-semibold">Lihat tugas hari ini &rarr;</p>
         </div>
         <div class="h-12 w-12 rounded-2xl bg-emerald-50 text-emerald-500 flex items-center justify-center transition-colors group-hover:bg-emerald-500 group-hover:text-white">
-            <i class="fa-solid fa-inbox text-lg"></i>
+            <i class="fa-solid fa-clipboard-check text-lg"></i>
         </div>
-    </div>
+    </a>
 
-    <!-- Surat Keluar -->
-    <div class="bg-white rounded-3xl border border-slate-200/80 p-6 shadow-sm shadow-slate-100/50 flex items-center justify-between group hover:border-blue-500/30 transition-all duration-300 transform hover:-translate-y-1">
+    <!-- Kinerja Bulan Ini -->
+    <a href="{{ route('daily-reports.index', ['tab' => 'monthly']) }}" 
+       class="bg-white rounded-3xl border border-slate-200/80 p-6 shadow-sm shadow-slate-100/50 flex items-center justify-between group hover:border-blue-500/30 transition-all duration-300 transform hover:-translate-y-1 block">
         <div class="space-y-2">
-            <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Surat Keluar</span>
-            <div class="text-3xl font-extrabold text-slate-800 tracking-tight">{{ $totalLettersOut }}</div>
-            <p class="text-[10px] text-slate-500 font-medium">Surat dikirim keluar</p>
+            <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Kinerja Bulan Ini</span>
+            <div class="text-3xl font-extrabold text-slate-800 tracking-tight">{{ $totalReportsThisMonth }}</div>
+            <p class="text-[10px] text-blue-600 font-semibold">Rekapitulasi bulanan &rarr;</p>
         </div>
         <div class="h-12 w-12 rounded-2xl bg-blue-50 text-blue-500 flex items-center justify-center transition-colors group-hover:bg-blue-500 group-hover:text-white">
-            <i class="fa-solid fa-paper-plane text-lg"></i>
+            <i class="fa-solid fa-calendar-week text-lg"></i>
         </div>
-    </div>
+    </a>
 
     <!-- Rata-rata Kepuasan -->
     <div class="bg-white rounded-3xl border border-slate-200/80 p-6 shadow-sm shadow-slate-100/50 flex items-center justify-between group hover:border-amber-500/30 transition-all duration-300 transform hover:-translate-y-1">

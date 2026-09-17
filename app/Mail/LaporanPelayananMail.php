@@ -16,17 +16,19 @@ class LaporanPelayananMail extends Mailable
     public array $filePaths;
     public int $totalVisitors;
     public int $totalNews;
+    public int $totalReports;
     public int $totalLettersIn;
     public int $totalLettersOut;
 
     /**
      * Create a new message instance.
      */
-    public function __construct(array $filePaths, int $totalVisitors, int $totalNews, int $totalLettersIn, int $totalLettersOut)
+    public function __construct(array $filePaths, int $totalVisitors, int $totalNews, int $totalReports = 0, int $totalLettersIn = 0, int $totalLettersOut = 0)
     {
         $this->filePaths = $filePaths;
         $this->totalVisitors = $totalVisitors;
         $this->totalNews = $totalNews;
+        $this->totalReports = $totalReports;
         $this->totalLettersIn = $totalLettersIn;
         $this->totalLettersOut = $totalLettersOut;
     }

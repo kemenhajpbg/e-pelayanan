@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Models\NewsReport;
+use App\Services\NewsAiService;
 use Illuminate\Support\Facades\Storage;
 
 class NewsReportController extends Controller
@@ -59,6 +60,33 @@ class NewsReportController extends Controller
         ]);
 
         return redirect()->back()->with('success', 'Laporan berita tayang berhasil disimpan!');
+    }
+
+    /**
+     * Generate draf judul & isi berita menggunakan AI (ChatGPT / Gemini / Local Engine).
+     */
+    public function generateAi(Request $request, NewsAiService $aiService)
+    {
+        $validated = $request->validate([
+            'kegiatan' => 'required|string|max:500',
+            'tempat_waktu' => 'required|string|max:500',
+            'garis_besar' => 'required|string|max:2000',
+            'provider' => 'nullable|string|in:auto,gemini,chatgpt',
+            'custom_api_key' => 'nullable|string|max:255',
+        ]);
+
+        $result = $aiService->generateNews(
+            $validated['kegiatan'],
+            $validated['tempat_waktu'],
+            $validated['garis_besar'],
+            $request->input('provider', 'auto'),
+            $request->input('custom_api_key')
+        );
+
+        return response()->json([
+            'success' => true,
+            'data' => $result,
+        ]);
     }
 
     public function destroy(NewsReport $newsReport)

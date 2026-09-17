@@ -87,10 +87,10 @@
                     <span>Berita Tayang</span>
                 </a>
 
-                <a href="{{ route('letters.index') }}" 
-                   class="flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 group {{ Route::is('letters.*') ? 'bg-teal-500/10 text-teal-400 border border-teal-500/20 font-medium' : 'text-slate-400 hover:bg-slate-800 hover:text-white border border-transparent' }}">
-                    <i class="fa-solid fa-envelope-open-text text-lg {{ Route::is('letters.*') ? 'text-teal-400' : 'text-slate-400 group-hover:text-white' }}"></i>
-                    <span>Surat Masuk & Keluar</span>
+                <a href="{{ route('daily-reports.index') }}" 
+                   class="flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 group {{ Route::is('daily-reports.*') ? 'bg-teal-500/10 text-teal-400 border border-teal-500/20 font-medium' : 'text-slate-400 hover:bg-slate-800 hover:text-white border border-transparent' }}">
+                    <i class="fa-solid fa-clipboard-check text-lg {{ Route::is('daily-reports.*') ? 'text-teal-400' : 'text-slate-400 group-hover:text-white' }}"></i>
+                    <span>Laporan Kinerja Harian</span>
                 </a>
 
                 <!-- Logout Button -->

@@ -180,10 +180,17 @@
             </h3>
             
             <form action="{{ route('visitors.index') }}" method="GET" class="space-y-4">
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
                     <div>
+                        <label class="block text-[10px] font-semibold text-slate-400 uppercase mb-1">Tanggal Kunjungan</label>
+                        <input type="date" name="tanggal" value="{{ request('tanggal') }}" onchange="this.form.submit()"
+                               class="w-full rounded-xl border border-slate-200 py-2 px-3 text-xs focus:border-teal-500 focus:outline-none focus:ring-4 focus:ring-teal-500/10 transition bg-white text-slate-600">
+                    </div>
+
+                    <div>
+                        <label class="block text-[10px] font-semibold text-slate-400 uppercase mb-1">Kelompok Usia</label>
                         <select name="kelompok_usia" onchange="this.form.submit()"
-                                class="w-full rounded-xl border border-slate-200 py-2.5 px-3 text-xs focus:border-teal-500 focus:outline-none focus:ring-4 focus:ring-teal-500/10 transition bg-white text-slate-600">
+                                class="w-full rounded-xl border border-slate-200 py-2 px-3 text-xs focus:border-teal-500 focus:outline-none focus:ring-4 focus:ring-teal-500/10 transition bg-white text-slate-600">
                             <option value="">Semua Usia</option>
                             <option value="Anak-anak" {{ request('kelompok_usia') == 'Anak-anak' ? 'selected' : '' }}>Anak-anak</option>
                             <option value="Remaja" {{ request('kelompok_usia') == 'Remaja' ? 'selected' : '' }}>Remaja</option>
@@ -193,8 +200,9 @@
                     </div>
 
                     <div>
+                        <label class="block text-[10px] font-semibold text-slate-400 uppercase mb-1">Keperluan</label>
                         <select name="keperluan" onchange="this.form.submit()"
-                                class="w-full rounded-xl border border-slate-200 py-2.5 px-3 text-xs focus:border-teal-500 focus:outline-none focus:ring-4 focus:ring-teal-500/10 transition bg-white text-slate-600">
+                                class="w-full rounded-xl border border-slate-200 py-2 px-3 text-xs focus:border-teal-500 focus:outline-none focus:ring-4 focus:ring-teal-500/10 transition bg-white text-slate-600">
                             <option value="">Semua Keperluan</option>
                             <option value="pendaftaran" {{ request('keperluan') == 'pendaftaran' ? 'selected' : '' }}>Pendaftaran</option>
                             <option value="konsultasi" {{ request('keperluan') == 'konsultasi' ? 'selected' : '' }}>Konsultasi</option>
@@ -205,8 +213,9 @@
                     </div>
 
                     <div>
+                        <label class="block text-[10px] font-semibold text-slate-400 uppercase mb-1">Tingkat Kepuasan</label>
                         <select name="tingkat_kepuasan" onchange="this.form.submit()"
-                                class="w-full rounded-xl border border-slate-200 py-2.5 px-3 text-xs focus:border-teal-500 focus:outline-none focus:ring-4 focus:ring-teal-500/10 transition bg-white text-slate-600">
+                                class="w-full rounded-xl border border-slate-200 py-2 px-3 text-xs focus:border-teal-500 focus:outline-none focus:ring-4 focus:ring-teal-500/10 transition bg-white text-slate-600">
                             <option value="">Semua Rating</option>
                             @for($i=5; $i>=1; $i--)
                                 <option value="{{ $i }}" {{ request('tingkat_kepuasan') == $i ? 'selected' : '' }}>{{ $i }} Bintang</option>
@@ -227,7 +236,7 @@
                     <button type="submit" class="bg-slate-800 text-white px-5 py-2.5 rounded-xl text-xs font-semibold hover:bg-slate-900 transition">
                         Cari
                     </button>
-                    @if(request()->anyFilled(['search', 'kelompok_usia', 'keperluan', 'tingkat_kepuasan']))
+                    @if(request()->anyFilled(['search', 'tanggal', 'kelompok_usia', 'keperluan', 'tingkat_kepuasan']))
                         <a href="{{ route('visitors.index') }}" class="bg-slate-100 hover:bg-slate-200 text-slate-600 px-4 py-2.5 rounded-xl text-xs font-semibold transition flex items-center justify-center">
                             Reset
                         </a>
@@ -239,17 +248,40 @@
         <!-- Table Card -->
         <div class="bg-white rounded-3xl border border-slate-200/80 shadow-sm shadow-slate-100/50 overflow-hidden">
             
-            <div class="px-6 py-5 border-b border-slate-100 flex items-center justify-between flex-wrap gap-2">
-                <h3 class="text-sm font-bold text-slate-800">Daftar Buku Tamu hari ini</h3>
-                <div class="flex items-center space-x-2">
+            <div class="px-6 py-5 border-b border-slate-100 flex items-center justify-between flex-wrap gap-3">
+                <div>
+                    <h3 class="text-sm font-bold text-slate-800">
+                        Daftar Buku Tamu
+                        @if(request('tanggal'))
+                            <span class="text-teal-600 font-bold">({{ \Carbon\Carbon::parse(request('tanggal'))->translatedFormat('d M Y') }})</span>
+                        @endif
+                    </h3>
+                    <p class="text-[11px] text-slate-400">Rekapitulasi data pengunjung pelayanan front office</p>
+                </div>
+
+                <div class="flex items-center flex-wrap gap-2">
+                    <!-- Cetak Register Tamu Harian PDF -->
+                    <form action="{{ route('visitors.print-daily') }}" method="GET" target="_blank" class="flex items-center space-x-1.5">
+                        <input type="date" name="tanggal" value="{{ request('tanggal', date('Y-m-d')) }}"
+                               class="rounded-xl border border-slate-200 py-1.5 px-2.5 text-xs font-semibold focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-500/20 bg-slate-50 text-slate-700 cursor-pointer"
+                               title="Pilih tanggal register tamu untuk dicetak">
+                        <button type="submit" 
+                                class="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold transition shadow-sm"
+                                title="Cetak register buku tamu dalam format PDF">
+                            <i class="fa-solid fa-print text-teal-400"></i>
+                            <span>Cetak Harian (PDF)</span>
+                        </button>
+                    </form>
+
                     @if(env('GOOGLE_SHEET_WEBHOOK_URL'))
                     <a href="https://docs.google.com/spreadsheets/d/1Mv_-ofOAwLDU_xD8Tvv_ySSoY_k-V1O5MEZu-gG6O-c/edit?usp=sharing" target="_blank"
                        class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl border border-emerald-200 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-bold transition">
                         <i class="fa-solid fa-file-excel text-emerald-600"></i>
-                        <span>Buka Spreadsheet</span>
+                        <span>Spreadsheet</span>
                     </a>
                     @endif
-                    <span class="bg-slate-100 text-slate-600 text-xs px-2.5 py-1 rounded-full font-bold">
+
+                    <span class="bg-slate-100 text-slate-600 text-xs px-2.5 py-1.5 rounded-xl font-bold">
                         Total: {{ $visitors->total() }}
                     </span>
                 </div>

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Visitor;
 use App\Models\NewsReport;
 use App\Models\Letter;
+use App\Models\DailyWorkReport;
 use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
@@ -16,6 +17,8 @@ class DashboardController extends Controller
         // 1. Metric Cards
         $totalVisitors = Visitor::count();
         $totalNews = NewsReport::count();
+        $totalReportsToday = DailyWorkReport::whereDate('tanggal', date('Y-m-d'))->count();
+        $totalReportsThisMonth = DailyWorkReport::whereYear('tanggal', date('Y'))->whereMonth('tanggal', date('m'))->count();
         $totalLettersIn = Letter::where('jenis', 'masuk')->count();
         $totalLettersOut = Letter::where('jenis', 'keluar')->count();
         $avgSatisfaction = round(Visitor::avg('tingkat_kepuasan') ?? 0, 1);
@@ -80,6 +83,8 @@ class DashboardController extends Controller
         return view('dashboard', compact(
             'totalVisitors',
             'totalNews',
+            'totalReportsToday',
+            'totalReportsThisMonth',
             'totalLettersIn',
             'totalLettersOut',
             'avgSatisfaction',
@@ -131,26 +136,34 @@ class DashboardController extends Controller
         }
         $pathNews = $this->generateCsv('berita_tayang_report.csv', $newsHeaders, $newsRows);
 
-        // 4. Buat file CSV untuk Surat
-        $letterHeaders = ['ID', 'Jenis', 'Nomor Surat', 'Tanggal Surat', 'Tanggal Terima/Kirim', 'Pengirim/Penerima', 'Perihal', 'Tanggal Diarsipkan'];
-        $letterRows = [];
-        foreach (Letter::all() as $l) {
-            $letterRows[] = [
-                $l->id,
-                $l->jenis === 'masuk' ? 'Surat Masuk' : 'Surat Keluar',
-                $l->nomor_surat,
-                $l->tanggal_surat,
-                $l->tanggal_terima_kirim,
-                $l->pengirim_penerima,
-                $l->perihal,
-                $l->created_at->format('Y-m-d H:i:s')
+        // 4. Buat file CSV untuk Laporan Kinerja Harian
+        $totalReports = DailyWorkReport::count();
+        $reportHeaders = ['ID', 'Tanggal', 'Waktu', 'Petugas', 'Kategori', 'Kegiatan', 'Output / Hasil', 'Volume', 'Satuan', 'Status', 'Keterangan'];
+        $reportRows = [];
+        foreach (DailyWorkReport::all() as $r) {
+            $waktu = ($r->waktu_mulai && $r->waktu_selesai) 
+                ? "{$r->waktu_mulai} - {$r->waktu_selesai}" 
+                : ($r->waktu_mulai ?: '-');
+
+            $reportRows[] = [
+                $r->id,
+                $r->tanggal->format('Y-m-d'),
+                $waktu,
+                $r->petugas ?: '-',
+                $r->kategori,
+                $r->kegiatan,
+                $r->output_hasil ?: '-',
+                $r->volume,
+                $r->satuan,
+                ucfirst($r->status),
+                $r->keterangan ?: '-',
             ];
         }
-        $pathLetters = $this->generateCsv('surat_masuk_keluar_report.csv', $letterHeaders, $letterRows);
+        $pathReports = $this->generateCsv('laporan_kinerja_harian_report.csv', $reportHeaders, $reportRows);
 
         // 5. Kirim Email dengan attachments
         $email = 'izzulhaq014@gmail.com';
-        $filePaths = [$pathVisitors, $pathNews, $pathLetters];
+        $filePaths = [$pathVisitors, $pathNews, $pathReports];
 
         try {
             \Illuminate\Support\Facades\Mail::to($email)->send(
@@ -158,6 +171,7 @@ class DashboardController extends Controller
                     $filePaths,
                     $totalVisitors,
                     $totalNews,
+                    $totalReports,
                     $totalLettersIn,
                     $totalLettersOut
                 )

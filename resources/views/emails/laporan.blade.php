@@ -34,19 +34,15 @@
                         <td style="text-align: right; font-weight: 700; color: #0f172a;">{{ $totalNews }} Berita</td>
                     </tr>
                     <tr>
-                        <td style="padding: 6px 0; font-weight: 500;">Surat Masuk</td>
-                        <td style="text-align: right; font-weight: 700; color: #0f172a;">{{ $totalLettersIn }} Surat</td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 6px 0; font-weight: 500;">Surat Keluar</td>
-                        <td style="text-align: right; font-weight: 700; color: #0f172a;">{{ $totalLettersOut }} Surat</td>
+                        <td style="padding: 6px 0; font-weight: 500;">Laporan Kinerja Harian</td>
+                        <td style="text-align: right; font-weight: 700; color: #0f172a;">{{ $totalReports }} Kegiatan</td>
                     </tr>
                 </table>
             </div>
 
             <!-- Notice box -->
             <div style="border-left: 4px solid #14b8a6; padding-left: 16px; margin-bottom: 28px; font-size: 13px; color: #64748b; font-style: italic;">
-                Semua data terlampir dipisahkan menjadi file CSV tersendiri (Buku Tamu, Berita Tayang, dan Surat Masuk/Keluar) yang dapat dibuka secara langsung menggunakan Microsoft Excel, Google Sheets, atau aplikasi spreadsheet lainnya.
+                Semua data terlampir dipisahkan menjadi file CSV tersendiri (Buku Tamu, Berita Tayang, dan Rekap Kinerja Harian) yang dapat dibuka secara langsung menggunakan Microsoft Excel, Google Sheets, atau aplikasi spreadsheet lainnya.
             </div>
 
             <p style="font-size: 14px; color: #475569; margin: 0 0 8px 0;">Terima kasih,</p>

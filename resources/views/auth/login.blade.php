@@ -66,14 +66,14 @@
                 
                 <!-- Email Address -->
                 <div class="space-y-2">
-                    <label for="email" class="block text-xs font-semibold text-slate-400 uppercase tracking-wider">Alamat Email</label>
+                    <label for="email" class="block text-xs font-semibold text-slate-400 uppercase tracking-wider">Email / Username</label>
                     <div class="relative">
                         <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-500">
                             <i class="fa-solid fa-envelope"></i>
                         </span>
                         <input type="email" name="email" id="email" required value="{{ old('email') }}" autofocus
                                class="w-full rounded-2xl bg-slate-950/50 border border-white/10 py-3.5 pl-11 pr-4 text-sm text-white focus:border-teal-500 focus:outline-none focus:ring-4 focus:ring-teal-500/10 placeholder-slate-600 transition duration-200"
-                               placeholder="adminpelayanan@kemenhaj.com">
+                               placeholder="admin@kemenhaj.pelayanan">
                     </div>
                 </div>
 

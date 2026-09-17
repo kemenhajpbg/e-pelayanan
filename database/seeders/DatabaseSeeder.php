@@ -17,10 +17,10 @@ class DatabaseSeeder extends Seeder
     {
         // 0. Seed User Admin Default
         User::updateOrCreate(
-            ['email' => 'adminpelayanan@kemenhaj.com'],
+            ['email' => 'admin@kemenhaj.pelayanan'],
             [
                 'name' => 'Admin Kemenhaj',
-                'password' => bcrypt('@1124D'),
+                'password' => bcrypt('kemenhajapiik'),
             ]
         );
 
@@ -125,6 +125,164 @@ class DatabaseSeeder extends Seeder
                     'perihal' => $s['perihal'],
                     'file_surat' => null,
                 ]);
+            }
+        }
+
+        // 4. Seeders untuk Laporan Kinerja Harian
+        if (\App\Models\DailyWorkReport::count() === 0) {
+            $user = \App\Models\User::first();
+            $userId = $user ? $user->id : null;
+            $petugasName = $user ? $user->name : 'Admin Kemenhaj';
+
+            $sampleReports = [
+                // Hari Ini
+                [
+                    'tanggal' => date('Y-m-d'),
+                    'waktu_mulai' => '08:00',
+                    'waktu_selesai' => '09:30',
+                    'kegiatan' => 'Melakukan verifikasi dan validasi kelengkapan berkas fisik pendaftaran haji reguler tahun 2026',
+                    'kategori' => 'Verifikasi & Validasi Dokumen',
+                    'output_hasil' => 'Berkas pendaftaran tervalidasi',
+                    'volume' => 6,
+                    'satuan' => 'Berkas',
+                    'status' => 'selesai',
+                    'keterangan' => 'Semua berkas lengkap sesuai SOP dan terinput di SISKOHAT',
+                ],
+                [
+                    'tanggal' => date('Y-m-d'),
+                    'waktu_mulai' => '09:30',
+                    'waktu_selesai' => '11:45',
+                    'kegiatan' => 'Pelayanan konsultasi tatap muka calon jamaah di loket Front Office terkait mekanisme pelimpahan porsi lansia dan wafat',
+                    'kategori' => 'Pelayanan Front Office',
+                    'output_hasil' => 'Konsultasi jamaah terlayani',
+                    'volume' => 4,
+                    'satuan' => 'Orang',
+                    'status' => 'selesai',
+                    'keterangan' => 'Diberikan lembar persyaratan dan formulir permohonan pelimpahan',
+                ],
+                [
+                    'tanggal' => date('Y-m-d'),
+                    'waktu_mulai' => '13:00',
+                    'waktu_selesai' => '14:30',
+                    'kegiatan' => 'Input dan sinkronisasi data Surat Pendaftaran Haji (SPH) ke aplikasi SISKOHAT Pusat',
+                    'kategori' => 'Administrasi & Pengarsipan',
+                    'output_hasil' => 'Nomor porsi terbit',
+                    'volume' => 5,
+                    'satuan' => 'Data',
+                    'status' => 'selesai',
+                    'keterangan' => 'Koneksi server SISKOHAT lancar',
+                ],
+                [
+                    'tanggal' => date('Y-m-d'),
+                    'waktu_mulai' => '14:30',
+                    'waktu_selesai' => '16:00',
+                    'kegiatan' => 'Penyusunan rekapitulasi buku tamu dan arsip berkas pelayanan front office harian',
+                    'kategori' => 'Administrasi & Pengarsipan',
+                    'output_hasil' => 'Rekapitulasi pelayanan',
+                    'volume' => 1,
+                    'satuan' => 'Laporan',
+                    'status' => 'proses',
+                    'keterangan' => 'Dalam proses finalisasi dan arsip dokumen',
+                ],
+
+                // 1 Hari lalu
+                [
+                    'tanggal' => date('Y-m-d', strtotime('-1 day')),
+                    'waktu_mulai' => '08:15',
+                    'waktu_selesai' => '10:00',
+                    'kegiatan' => 'Pelayanan penerimaan berkas permohonan pembatalan porsi haji reguler karena wafat',
+                    'kategori' => 'Pelayanan Front Office',
+                    'output_hasil' => 'Berkas pembatalan diproses',
+                    'volume' => 2,
+                    'satuan' => 'Berkas',
+                    'status' => 'selesai',
+                    'keterangan' => 'Surat kematian dan penetapan ahli waris lengkap',
+                ],
+                [
+                    'tanggal' => date('Y-m-d', strtotime('-1 day')),
+                    'waktu_mulai' => '10:00',
+                    'waktu_selesai' => '12:00',
+                    'kegiatan' => 'Rapat koordinasi teknis persiapan bimbingan manasik haji tingkat kabupaten',
+                    'kategori' => 'Rapat / Koordinasi',
+                    'output_hasil' => 'Notula rapat & jadwal manasik',
+                    'volume' => 1,
+                    'satuan' => 'Kegiatan',
+                    'status' => 'selesai',
+                    'keterangan' => 'Dihadiri seluruh Kasi dan Kepala KUA se-Kabupaten Purbalingga',
+                ],
+                [
+                    'tanggal' => date('Y-m-d', strtotime('-1 day')),
+                    'waktu_mulai' => '13:30',
+                    'waktu_selesai' => '15:30',
+                    'kegiatan' => 'Pengecekan dan validasi data biometrik paspor calon jamaah haji reguler',
+                    'kategori' => 'Verifikasi & Validasi Dokumen',
+                    'output_hasil' => 'Paspor tervalidasi',
+                    'volume' => 12,
+                    'satuan' => 'Paspor',
+                    'status' => 'selesai',
+                    'keterangan' => 'Data sesuai dengan kartu keluarga dan KTP',
+                ],
+
+                // 2 Hari lalu
+                [
+                    'tanggal' => date('Y-m-d', strtotime('-2 days')),
+                    'waktu_mulai' => '08:30',
+                    'waktu_selesai' => '11:00',
+                    'kegiatan' => 'Pelayanan informasi dan pengaduan masyarakat seputar estimasi tahun keberangkatan haji',
+                    'kategori' => 'Konsultasi & Pengaduan',
+                    'output_hasil' => 'Masyarakat terinformasikan',
+                    'volume' => 7,
+                    'satuan' => 'Orang',
+                    'status' => 'selesai',
+                    'keterangan' => 'Masyarakat puas dengan penjelasan alur antrean SISKOHAT',
+                ],
+                [
+                    'tanggal' => date('Y-m-d', strtotime('-2 days')),
+                    'waktu_mulai' => '13:00',
+                    'waktu_selesai' => '15:00',
+                    'kegiatan' => 'Pengarsipan dokumen surat keputusan bimbingan manasik dan data pembimbing haji',
+                    'kategori' => 'Administrasi & Pengarsipan',
+                    'output_hasil' => 'Arsip tertata',
+                    'volume' => 3,
+                    'satuan' => 'Bandel',
+                    'status' => 'selesai',
+                    'keterangan' => 'Tersimpan dalam lemari arsip digital dan fisik',
+                ],
+
+                // 4 Hari lalu
+                [
+                    'tanggal' => date('Y-m-d', strtotime('-4 days')),
+                    'waktu_mulai' => '09:00',
+                    'waktu_selesai' => '11:30',
+                    'kegiatan' => 'Melakukan pendampingan pembuatan akun SISKOPATUH bagi Kelompok Bimbingan Ibadah Haji dan Umrah (KBIHU)',
+                    'kategori' => 'Pelayanan Front Office',
+                    'output_hasil' => 'Akun KBIHU aktif',
+                    'volume' => 2,
+                    'satuan' => 'Lembaga',
+                    'status' => 'selesai',
+                    'keterangan' => 'Proses registrasi berhasil tanpa kendala',
+                ],
+
+                // 6 Hari lalu
+                [
+                    'tanggal' => date('Y-m-d', strtotime('-6 days')),
+                    'waktu_mulai' => '08:00',
+                    'waktu_selesai' => '10:30',
+                    'kegiatan' => 'Verifikasi berkas usulan pendaftaran izin operasional Penyelenggara Perjalanan Ibadah Umrah (PPIU)',
+                    'kategori' => 'Verifikasi & Validasi Dokumen',
+                    'output_hasil' => 'Berkas rekomendasi',
+                    'volume' => 1,
+                    'satuan' => 'Berkas',
+                    'status' => 'selesai',
+                    'keterangan' => 'Surat rekomendasi Kanwil diterbitkan',
+                ],
+            ];
+
+            foreach ($sampleReports as $rep) {
+                \App\Models\DailyWorkReport::create(array_merge($rep, [
+                    'user_id' => $userId,
+                    'petugas' => $petugasName,
+                ]));
             }
         }
     }

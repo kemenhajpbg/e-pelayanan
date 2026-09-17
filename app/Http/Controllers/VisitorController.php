@@ -6,7 +6,10 @@ use Illuminate\Http\Request;
 
 use App\Models\Visitor;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class VisitorController extends Controller
 {
@@ -23,6 +26,11 @@ class VisitorController extends Controller
                   ->orWhere('no_hp', 'like', "%{$search}%")
                   ->orWhere('keperluan', 'like', "%{$search}%");
             });
+        }
+
+        // Filter berdasarkan tanggal kunjungan
+        if ($request->filled('tanggal')) {
+            $query->whereDate('created_at', $request->tanggal);
         }
 
         // Filter berdasarkan kelompok usia
@@ -43,6 +51,30 @@ class VisitorController extends Controller
         $visitors = $query->latest()->paginate(10)->withQueryString();
 
         return view('visitor.index', compact('visitors'));
+    }
+
+    /**
+     * Tampilan cetak PDF / print register tamu harian.
+     */
+    public function printDaily(Request $request)
+    {
+        $tanggal = $request->input('tanggal', date('Y-m-d'));
+        $formattedDate = Carbon::parse($tanggal)->translatedFormat('l, d F Y');
+
+        $visitors = Visitor::whereDate('created_at', $tanggal)
+            ->orderBy('created_at', 'asc')
+            ->get();
+
+        $stats = [
+            'total' => $visitors->count(),
+            'avg_satisfaction' => round($visitors->avg('tingkat_kepuasan') ?? 0, 1),
+            'keperluan' => $visitors->groupBy('keperluan')->map->count(),
+            'usia' => $visitors->groupBy('kelompok_usia')->map->count(),
+        ];
+
+        $petugasName = Auth::user() ? Auth::user()->name : 'Petugas Front Office';
+
+        return view('visitor.print', compact('visitors', 'tanggal', 'formattedDate', 'stats', 'petugasName'));
     }
 
     public function store(Request $request)
