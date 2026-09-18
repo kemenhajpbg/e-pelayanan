@@ -26,6 +26,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/', [VisitorController::class, 'index'])->name('index');
         Route::post('/', [VisitorController::class, 'store'])->name('store');
         Route::get('/print-daily', [VisitorController::class, 'printDaily'])->name('print-daily');
+        Route::get('/print-monthly', [VisitorController::class, 'printMonthly'])->name('print-monthly');
+        Route::get('/export-monthly', [VisitorController::class, 'exportMonthly'])->name('export-monthly');
+        Route::post('/sync-drive-monthly', [VisitorController::class, 'syncDriveMonthly'])->name('sync-drive-monthly');
         Route::delete('/{visitor}', [VisitorController::class, 'destroy'])->name('destroy');
     });
 

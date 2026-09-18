@@ -164,7 +164,7 @@ class DashboardController extends Controller
         $pathReports = $this->generateCsv('laporan_kinerja_harian_report.csv', $reportHeaders, $reportRows);
 
         // 5. Kirim Email dengan attachments
-        $email = 'izzulhaq014@gmail.com';
+        $email = env('GOOGLE_DRIVE_EMAIL', 'seksiphupbg@gmail.com');
         $filePaths = [$pathVisitors, $pathNews, $pathReports];
 
         try {

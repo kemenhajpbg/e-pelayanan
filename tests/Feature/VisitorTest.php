@@ -87,4 +87,86 @@ class VisitorTest extends TestCase
             'keperluan' => 'pelimpahan',
         ]);
     }
+
+    public function test_authenticated_user_can_view_monthly_recap_tab(): void
+    {
+        Visitor::create([
+            'nama' => 'Ahmad Bulanan',
+            'alamat' => 'Kutasari, Purbalingga',
+            'no_hp' => '085211223344',
+            'kelompok_usia' => 'Dewasa',
+            'keperluan' => 'pendaftaran',
+            'tingkat_kepuasan' => 5,
+        ]);
+
+        $response = $this->actingAs($this->user)->get('/visitors?tab=monthly&bulan=' . date('m') . '&tahun=' . date('Y'));
+        $response->assertStatus(200);
+        $response->assertSee('Rekapitulasi Bulanan Buku Tamu');
+        $response->assertSee('Ahmad Bulanan');
+        $response->assertSee('Cetak Rekap (PDF)');
+        $response->assertSee('Unduh Spreadsheet');
+        $response->assertSee('seksiphupbg@gmail.com');
+    }
+
+    public function test_authenticated_user_can_view_print_monthly_page(): void
+    {
+        Visitor::create([
+            'nama' => 'Hj. Aminah',
+            'alamat' => 'Bukateja, Purbalingga',
+            'no_hp' => '087712345678',
+            'kelompok_usia' => 'Lansia',
+            'keperluan' => 'pelimpahan',
+            'tingkat_kepuasan' => 5,
+        ]);
+
+        $response = $this->actingAs($this->user)->get('/visitors/print-monthly?bulan=' . date('m') . '&tahun=' . date('Y'));
+        $response->assertStatus(200);
+        $response->assertSee('Laporan Rekapitulasi Register Pengunjung PTSP');
+        $response->assertSee('Hj. Aminah');
+        $response->assertSee('Kepala Seksi Penyelenggaraan Haji dan Umrah');
+    }
+
+    public function test_authenticated_user_can_export_monthly_spreadsheet(): void
+    {
+        Visitor::create([
+            'nama' => 'Zaenal Arifin',
+            'alamat' => 'Padamara, Purbalingga',
+            'no_hp' => '081399887766',
+            'kelompok_usia' => 'Dewasa',
+            'keperluan' => 'konsultasi',
+            'tingkat_kepuasan' => 5,
+        ]);
+
+        $response = $this->actingAs($this->user)->get('/visitors/export-monthly?bulan=' . date('m') . '&tahun=' . date('Y'));
+        $response->assertStatus(200);
+        $this->assertTrue(str_contains($response->headers->get('content-type'), 'text/csv'));
+        $this->assertTrue(str_contains($response->headers->get('content-disposition'), 'rekap_buku_tamu_'));
+    }
+
+    public function test_authenticated_user_can_sync_monthly_to_google_drive_email(): void
+    {
+        \Illuminate\Support\Facades\Mail::fake();
+
+        Visitor::create([
+            'nama' => 'Farhan Hakim',
+            'alamat' => 'Kejobong, Purbalingga',
+            'no_hp' => '082133445566',
+            'kelompok_usia' => 'Remaja',
+            'keperluan' => 'pendaftaran',
+            'tingkat_kepuasan' => 5,
+        ]);
+
+        $response = $this->actingAs($this->user)->post('/visitors/sync-drive-monthly', [
+            'bulan' => date('m'),
+            'tahun' => date('Y'),
+        ]);
+
+        $response->assertRedirect();
+        $response->assertSessionHas('success');
+
+        \Illuminate\Support\Facades\Mail::assertSent(\App\Mail\VisitorMonthlyReportMail::class, function ($mail) {
+            return $mail->hasTo('seksiphupbg@gmail.com');
+        });
+    }
 }
+
