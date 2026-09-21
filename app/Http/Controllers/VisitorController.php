@@ -131,7 +131,7 @@ class VisitorController extends Controller
             'usia' => $visitors->groupBy('kelompok_usia')->map->count(),
         ];
 
-        $petugasName = Auth::user() ? Auth::user()->name : 'Petugas Front Office';
+        $petugasName = $request->input('petugas', 'M. Ainul Fikri');
 
         return view('visitor.print', compact('visitors', 'tanggal', 'formattedDate', 'stats', 'petugasName'));
     }
@@ -164,7 +164,7 @@ class VisitorController extends Controller
             'usia' => $usiaGroups,
         ];
 
-        $petugasName = Auth::user() ? Auth::user()->name : 'Petugas Front Office';
+        $petugasName = $request->input('petugas', 'M. Ainul Fikri');
 
         return view('visitor.print_monthly', compact(
             'visitors',

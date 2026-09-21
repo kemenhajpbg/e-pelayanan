@@ -291,6 +291,12 @@
                             <input type="date" name="tanggal" value="{{ request('tanggal', date('Y-m-d')) }}"
                                    class="rounded-xl border border-slate-200 py-1.5 px-2.5 text-xs font-semibold focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-500/20 bg-slate-50 text-slate-700 cursor-pointer"
                                    title="Pilih tanggal register tamu untuk dicetak">
+                            <select name="petugas" 
+                                    class="rounded-xl border border-slate-200 py-1.5 px-2.5 text-xs font-semibold focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-500/20 bg-slate-50 text-slate-700 cursor-pointer"
+                                    title="Pilih Petugas Piket / FO">
+                                <option value="M. Ainul Fikri">1. M. Ainul Fikri</option>
+                                <option value="M Haidar Izzul haq">2. M Haidar Izzul haq</option>
+                            </select>
                             <button type="submit" 
                                     class="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold transition shadow-sm"
                                     title="Cetak register buku tamu dalam format PDF">
@@ -498,11 +504,22 @@
                 <!-- Tombol Aksi: Cetak PDF, Unduh CSV/Excel, Kirim ke Google Drive -->
                 <div class="flex items-center flex-wrap gap-2.5">
                     <!-- Cetak PDF Bulanan -->
-                    <a href="{{ route('visitors.print-monthly', ['bulan' => $selectedMonth, 'tahun' => $selectedYear]) }}" target="_blank"
-                       class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs transition duration-200 shadow-sm flex items-center space-x-2">
-                        <i class="fa-solid fa-print text-teal-400"></i>
-                        <span>Cetak Rekap (PDF)</span>
-                    </a>
+                    <form action="{{ route('visitors.print-monthly') }}" method="GET" target="_blank" class="inline-flex items-center space-x-1.5">
+                        <input type="hidden" name="bulan" value="{{ $selectedMonth }}">
+                        <input type="hidden" name="tahun" value="{{ $selectedYear }}">
+                        <select name="petugas" 
+                                class="rounded-xl border border-slate-200 py-2 px-2.5 text-xs font-semibold focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-500/20 bg-slate-50 text-slate-700 cursor-pointer"
+                                title="Pilih Petugas Piket / FO">
+                            <option value="M. Ainul Fikri">1. M. Ainul Fikri</option>
+                            <option value="M Haidar Izzul haq">2. M Haidar Izzul haq</option>
+                        </select>
+                        <button type="submit" 
+                                class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs transition duration-200 shadow-sm flex items-center space-x-2"
+                                title="Cetak rekapitulasi buku tamu bulanan dalam format PDF">
+                            <i class="fa-solid fa-print text-teal-400"></i>
+                            <span>Cetak Rekap (PDF)</span>
+                        </button>
+                    </form>
 
                     <!-- Unduh Spreadsheet CSV/Excel -->
                     <a href="{{ route('visitors.export-monthly', ['bulan' => $selectedMonth, 'tahun' => $selectedYear]) }}"

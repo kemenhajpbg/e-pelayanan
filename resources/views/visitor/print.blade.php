@@ -167,7 +167,7 @@
         /* Signatures */
         .signature-section {
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-end;
             margin-top: 40px;
             page-break-inside: avoid;
         }
@@ -243,9 +243,18 @@
 
     <!-- Action Bar (Hanya tampil di layar browser) -->
     <div class="action-bar">
-        <button onclick="window.close()" class="btn btn-close">
-            &larr; Tutup Jendela
-        </button>
+        <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+            <button onclick="window.close()" class="btn btn-close">
+                &larr; Tutup Jendela
+            </button>
+            <div style="display: flex; align-items: center; gap: 6px; font-size: 9.5pt; color: #334155; font-weight: 600;">
+                <label for="petugasSelect">&#128100; Petugas Piket / FO:</label>
+                <select id="petugasSelect" onchange="updatePetugas(this.value)" style="padding: 6px 12px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 9pt; font-weight: 600; cursor: pointer; background: #fff;">
+                    <option value="M. Ainul Fikri" {{ $petugasName == 'M. Ainul Fikri' ? 'selected' : '' }}>1. M. Ainul Fikri</option>
+                    <option value="M Haidar Izzul haq" {{ $petugasName == 'M Haidar Izzul haq' ? 'selected' : '' }}>2. M Haidar Izzul haq</option>
+                </select>
+            </div>
+        </div>
         <button onclick="window.print()" class="btn btn-print">
             &#128438; Cetak / Simpan PDF
         </button>
@@ -259,7 +268,7 @@
                 <h2>Kementerian Haji dan Umrah Republik Indonesia</h2>
                 <h3>Kantor Kabupaten Purbalingga</h3>
                 <p>Jl. Mayjen Sungkono No. 45, Kabupaten Purbalingga, Jawa Tengah 53311</p>
-                <p>Telp: (0281) 891234 | Email: pelayanan@kemenhaj.go.id</p>
+                <p>Telp: +62 822-2502-0837 | Email: kemenhajum.pbg@gmail.com</p>
             </div>
         </div>
 
@@ -277,7 +286,7 @@
             </tr>
             <tr>
                 <td class="meta-label">Petugas Piket / FO</td>
-                <td>: <strong>{{ $petugasName }}</strong></td>
+                <td>: <strong class="petugas-name-display">{{ $petugasName }}</strong></td>
             </tr>
             <tr>
                 <td class="meta-label">Tanggal Pelayanan</td>
@@ -370,20 +379,20 @@
         <!-- Lembar Tanda Tangan Resmi -->
         <div class="signature-section">
             <div class="signature-box">
-                <p>Mengetahui,<br>Kepala Seksi / Koordinator PTSP</p>
-                <div class="signature-space"></div>
-                <p class="signature-name">H. Ahmad Fauzi, S.Ag., M.S.I.</p>
-                <p style="font-size: 8.5pt; color: #64748b;">NIP. 19780512 200501 1 004</p>
-            </div>
-
-            <div class="signature-box">
                 <p>Purbalingga, {{ $formattedDate }}<br>Petugas Pelapor Front Office,</p>
                 <div class="signature-space"></div>
-                <p class="signature-name">{{ $petugasName }}</p>
+                <p class="signature-name petugas-name-display">{{ $petugasName }}</p>
                 <p style="font-size: 8.5pt; color: #64748b;">Petugas Layanan Informasi & Tamu</p>
             </div>
         </div>
     </div>
 
+    <script>
+        function updatePetugas(name) {
+            document.querySelectorAll('.petugas-name-display').forEach(function(el) {
+                el.textContent = name;
+            });
+        }
+    </script>
 </body>
 </html>

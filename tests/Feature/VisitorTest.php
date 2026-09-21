@@ -65,6 +65,10 @@ class VisitorTest extends TestCase
         $response->assertSee('Buku Register Pengunjung Pelayanan Terpadu');
         $response->assertSee('Budi Santoso');
         $response->assertSee('Paraf Tamu');
+        $response->assertSee('+62 822-2502-0837');
+        $response->assertSee('kemenhajum.pbg@gmail.com');
+        $response->assertSee('M. Ainul Fikri');
+        $response->assertDontSee('Kepala Seksi / Koordinator PTSP');
     }
 
     public function test_authenticated_user_can_store_visitor(): void
@@ -123,7 +127,11 @@ class VisitorTest extends TestCase
         $response->assertStatus(200);
         $response->assertSee('Laporan Rekapitulasi Register Pengunjung PTSP');
         $response->assertSee('Hj. Aminah');
-        $response->assertSee('Kepala Seksi Penyelenggaraan Haji dan Umrah');
+        $response->assertSee('+62 822-2502-0837');
+        $response->assertSee('kemenhajum.pbg@gmail.com');
+        $response->assertSee('Petugas Pelapor Front Office PTSP');
+        $response->assertSee('M. Ainul Fikri');
+        $response->assertDontSee('Kepala Seksi Penyelenggaraan Haji dan Umrah');
     }
 
     public function test_authenticated_user_can_export_monthly_spreadsheet(): void
