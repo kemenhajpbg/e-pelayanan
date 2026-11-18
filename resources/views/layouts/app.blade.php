@@ -81,6 +81,37 @@
                     <span>Buku Tamu / Pengunjung</span>
                 </a>
 
+                <!-- Modul Baru: Tanda Terima Berkas -->
+                <div x-data="{ openMenu: {{ Route::is('tanda-terima.*') ? 'true' : 'false' }} }" class="space-y-1">
+                    <div class="flex items-center justify-between rounded-xl transition-all duration-200 group {{ Route::is('tanda-terima.*') ? 'bg-teal-500/10 text-teal-400 border border-teal-500/20 font-medium' : 'text-slate-400 hover:bg-slate-800 hover:text-white border border-transparent' }}">
+                        <a href="{{ route('tanda-terima.index') }}" class="flex-1 flex items-center space-x-3 px-4 py-3">
+                            <i class="fa-solid fa-file-signature text-lg {{ Route::is('tanda-terima.*') ? 'text-teal-400' : 'text-slate-400 group-hover:text-white' }}"></i>
+                            <span>Tanda Terima Berkas</span>
+                        </a>
+                        <button type="button" @click="openMenu = !openMenu" class="px-3 py-3 text-xs text-slate-400 hover:text-teal-400 transition-colors">
+                            <i class="fa-solid" :class="openMenu ? 'fa-chevron-down' : 'fa-chevron-right'"></i>
+                        </button>
+                    </div>
+                    
+                    <div x-show="openMenu" class="pl-9 pr-2 py-1 space-y-1 text-xs">
+                        <a href="{{ route('tanda-terima.create') }}" 
+                           class="flex items-center py-2 px-3 rounded-lg transition-colors {{ Route::is('tanda-terima.create') ? 'bg-teal-500/20 text-teal-300 font-bold' : 'text-slate-400 hover:text-white hover:bg-slate-800/60' }}">
+                            <i class="fa-solid fa-plus-circle mr-2 text-[10px]"></i>
+                            <span>Buat Tanda Terima</span>
+                        </a>
+                        <a href="{{ route('tanda-terima.index') }}" 
+                           class="flex items-center py-2 px-3 rounded-lg transition-colors {{ Route::is('tanda-terima.index') ? 'bg-teal-500/20 text-teal-300 font-bold' : 'text-slate-400 hover:text-white hover:bg-slate-800/60' }}">
+                            <i class="fa-solid fa-receipt mr-2 text-[10px]"></i>
+                            <span>Riwayat Transaksi</span>
+                        </a>
+                        <a href="{{ route('tanda-terima.laporan') }}" 
+                           class="flex items-center py-2 px-3 rounded-lg transition-colors {{ Route::is('tanda-terima.laporan') ? 'bg-teal-500/20 text-teal-300 font-bold' : 'text-slate-400 hover:text-white hover:bg-slate-800/60' }}">
+                            <i class="fa-solid fa-chart-pie mr-2 text-[10px]"></i>
+                            <span>Rekap & Laporan</span>
+                        </a>
+                    </div>
+                </div>
+
                 <a href="{{ route('news.index') }}" 
                    class="flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 group {{ Route::is('news.*') ? 'bg-teal-500/10 text-teal-400 border border-teal-500/20 font-medium' : 'text-slate-400 hover:bg-slate-800 hover:text-white border border-transparent' }}">
                     <i class="fa-solid fa-newspaper text-lg {{ Route::is('news.*') ? 'text-teal-400' : 'text-slate-400 group-hover:text-white' }}"></i>

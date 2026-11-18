@@ -8,6 +8,7 @@ use App\Http\Controllers\NewsReportController;
 use App\Http\Controllers\DailyWorkReportController;
 use App\Http\Controllers\LetterController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\TandaTerimaController;
 
 // Rute Autentikasi (Hanya untuk Tamu / Belum Login)
 Route::middleware('guest')->group(function () {
@@ -48,9 +49,33 @@ Route::middleware('auth')->group(function () {
         Route::delete('/{dailyReport}', [DailyWorkReportController::class, 'destroy'])->name('destroy');
     });
 
+    // Tanda Terima Berkas Pelayanan
+    Route::prefix('tanda-terima')->name('tanda-terima.')->group(function () {
+        Route::get('/', [TandaTerimaController::class, 'index'])->name('index');
+        Route::get('/create', [TandaTerimaController::class, 'create'])->name('create');
+        Route::post('/', [TandaTerimaController::class, 'store'])->name('store');
+        Route::get('/laporan', [TandaTerimaController::class, 'laporan'])->name('laporan');
+        Route::get('/export-excel', [TandaTerimaController::class, 'exportExcel'])->name('export-excel');
+        Route::get('/export-pdf', [TandaTerimaController::class, 'exportPdf'])->name('export-pdf');
+        Route::get('/{id}', [TandaTerimaController::class, 'show'])->name('show');
+        Route::get('/{id}/print', [TandaTerimaController::class, 'printThermal'])->name('print');
+        Route::post('/{id}/status', [TandaTerimaController::class, 'updateStatus'])->name('update-status');
+    });
+
     // Pengalihan dari modul lama Surat Masuk & Keluar ke Laporan Kinerja Harian
     Route::get('/letters', function () {
         return redirect()->route('daily-reports.index');
     })->name('letters.index');
+
+    // Utilitas Migrasi Database di Hosting (Khusus Admin Login)
+    Route::get('/system/migrate', function () {
+        try {
+            \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
+            $output = \Illuminate\Support\Facades\Artisan::output();
+            return response("<div style='font-family:sans-serif;max-width:600px;margin:40px auto;background:#0f172a;color:#14b8a6;padding:24px;border-radius:16px;box-shadow:0 10px 25px -5px rgba(0,0,0,0.3);'><h3 style='margin-top:0;color:#ffffff;'>Migrasi Database Berhasil:</h3><pre style='background:#1e293b;color:#f8fafc;padding:16px;border-radius:8px;overflow-x:auto;'>" . htmlspecialchars($output ?: 'Database sudah dalam versi terbaru.') . "</pre><a href='" . route('dashboard') . "' style='color:#0f172a;display:inline-block;margin-top:10px;padding:10px 20px;background:#2dd4bf;font-weight:bold;text-decoration:none;border-radius:8px;'>&larr; Kembali ke Dashboard</a></div>");
+        } catch (\Throwable $e) {
+            return response("<div style='font-family:sans-serif;max-width:600px;margin:40px auto;background:#450a0a;color:#fca5a5;padding:24px;border-radius:16px;'><h3 style='margin-top:0;color:#ffffff;'>Gagal Migrasi:</h3><pre style='background:#1e1e1e;color:#fca5a5;padding:16px;border-radius:8px;overflow-x:auto;'>" . htmlspecialchars($e->getMessage()) . "</pre><a href='" . route('dashboard') . "' style='color:#ffffff;display:inline-block;margin-top:10px;padding:10px 20px;background:#991b1b;font-weight:bold;text-decoration:none;border-radius:8px;'>&larr; Kembali ke Dashboard</a></div>", 500);
+        }
+    })->name('system.migrate');
 });
 

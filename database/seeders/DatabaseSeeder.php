@@ -285,5 +285,103 @@ class DatabaseSeeder extends Seeder
                 ]));
             }
         }
+
+        // 4. Seeders untuk Tanda Terima Berkas Pelayanan
+        if (\App\Models\TandaTerima::count() <= 1) {
+            $user = User::first();
+            $petugasId = $user ? $user->id : 1;
+
+            $sampleTtb = [
+                [
+                    'nama' => 'Budi Santoso',
+                    'no_hp' => '081234567890',
+                    'berkas' => ['Berkas Pelimpahan', 'Paspor'],
+                    'status' => 'Diproses',
+                    'keterangan' => 'Pelimpahan porsi almarhum orang tua, berkas lengkap.',
+                    'minutes_ago' => 60,
+                ],
+                [
+                    'nama' => 'Hj. Siti Khotijah',
+                    'no_hp' => '081398765432',
+                    'berkas' => ['Berkas Keberangkatan Haji', 'Paspor'],
+                    'status' => 'Selesai',
+                    'keterangan' => 'Pelunasan Bipih tahap 1 selesai diverifikasi.',
+                    'minutes_ago' => 180,
+                ],
+                [
+                    'nama' => 'Ahmad Fauzan',
+                    'no_hp' => '085223344556',
+                    'berkas' => ['Berkas Perbaikan Data Jemaah'],
+                    'status' => 'Diproses',
+                    'keterangan' => 'Perbaikan ejaan nama pada paspor dan SPPH.',
+                    'minutes_ago' => 240,
+                ],
+                [
+                    'nama' => 'Dewi Suryani',
+                    'no_hp' => '087711223344',
+                    'berkas' => ['Berkas Pengajuan Penggabungan/Pendampingan'],
+                    'status' => 'Selesai',
+                    'keterangan' => 'Penggabungan mahram suami istri keberangkatan tahun 2027.',
+                    'minutes_ago' => 320,
+                ],
+                [
+                    'nama' => 'Mochammad Ridwan',
+                    'no_hp' => '082133445566',
+                    'berkas' => ['Berkas Pengajuan Mutasi'],
+                    'status' => 'Diterima',
+                    'keterangan' => 'Mutasi porsi jemaah dari Kabupaten Banyumas ke Purbalingga.',
+                    'minutes_ago' => 20,
+                ],
+                [
+                    'nama' => 'Nurul Hidayah',
+                    'no_hp' => '085644556677',
+                    'berkas' => ['Berkas Pelimpahan'],
+                    'status' => 'Dikembalikan',
+                    'alasan' => 'Akta Kematian dari Disdukcapil asli belum disertakan, mohon dilengkapi.',
+                    'keterangan' => 'Berkas dikembalikan untuk melengkapi dokumen legalisir.',
+                    'minutes_ago' => 400,
+                ],
+            ];
+
+            // Sample signature 1x1 or signature stroke
+            $defaultSig = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAK8AAAA8CAYAAAB2bB+iAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAJMSURBVHgB7dw/SxtBFMDxv/gGgqAgqF2wtLHX2lkKWtjY2GvjF1j4BYKNjaU2WljYWFjY';
+
+            foreach ($sampleTtb as $s) {
+                $subTime = \Carbon\Carbon::now('Asia/Jakarta')->subMinutes($s['minutes_ago']);
+                $nomor = \App\Models\TandaTerima::generateNomorTandaTerima($subTime);
+
+                $tt = \App\Models\TandaTerima::create([
+                    'nomor_tanda_terima' => $nomor,
+                    'nama_penyetor' => $s['nama'],
+                    'no_hp' => $s['no_hp'],
+                    'keterangan' => $s['keterangan'] ?? null,
+                    'tanda_tangan' => $defaultSig,
+                    'petugas_id' => $petugasId,
+                    'status' => $s['status'],
+                    'alasan_status' => $s['alasan'] ?? null,
+                    'submitted_at' => $subTime,
+                ]);
+
+                foreach ($s['berkas'] as $b) {
+                    $tt->berkas()->create(['jenis_berkas' => $b]);
+                }
+
+                $tt->statusHistories()->create([
+                    'petugas_id' => $petugasId,
+                    'status' => 'Diterima',
+                    'keterangan' => 'Berkas pertama kali diterima oleh petugas di loket pelayanan.',
+                    'created_at' => $subTime,
+                ]);
+
+                if ($s['status'] !== 'Diterima') {
+                    $tt->statusHistories()->create([
+                        'petugas_id' => $petugasId,
+                        'status' => $s['status'],
+                        'keterangan' => $s['alasan'] ?? ('Status diperbarui menjadi ' . $s['status'] . ' oleh petugas.'),
+                        'created_at' => $subTime->copy()->addMinutes(15),
+                    ]);
+                }
+            }
+        }
     }
 }

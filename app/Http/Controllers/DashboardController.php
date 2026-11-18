@@ -8,6 +8,9 @@ use App\Models\Visitor;
 use App\Models\NewsReport;
 use App\Models\Letter;
 use App\Models\DailyWorkReport;
+use App\Models\TandaTerima;
+use App\Models\TandaTerimaBerkas;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
@@ -82,6 +85,20 @@ class DashboardController extends Controller
             ksort($trenKunjungan);
         }
 
+        // 6. Data Modul Tanda Terima Berkas
+        $todayWib = Carbon::now('Asia/Jakarta');
+        $totalTtbToday = TandaTerima::whereDate('submitted_at', $todayWib->toDateString())->count();
+        $totalTtbThisMonth = TandaTerima::whereYear('submitted_at', $todayWib->year)
+            ->whereMonth('submitted_at', $todayWib->month)
+            ->count();
+        $totalTtb = TandaTerima::count();
+
+        // Statistik 7 Jenis Berkas
+        $ttbJenisStats = [];
+        foreach (TandaTerimaBerkas::JENIS_BERKAS_LIST as $jb) {
+            $ttbJenisStats[$jb] = TandaTerimaBerkas::where('jenis_berkas', $jb)->count();
+        }
+
         return view('dashboard', compact(
             'totalVisitors',
             'totalNews',
@@ -93,7 +110,11 @@ class DashboardController extends Controller
             'keperluanChart',
             'usiaChart',
             'kepuasanChart',
-            'trenKunjungan'
+            'trenKunjungan',
+            'totalTtbToday',
+            'totalTtbThisMonth',
+            'totalTtb',
+            'ttbJenisStats'
         ));
     }
 
