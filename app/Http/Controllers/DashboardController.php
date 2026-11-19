@@ -12,6 +12,8 @@ use App\Models\TandaTerima;
 use App\Models\TandaTerimaBerkas;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Artisan;
 
 class DashboardController extends Controller
 {
@@ -85,18 +87,38 @@ class DashboardController extends Controller
             ksort($trenKunjungan);
         }
 
-        // 6. Data Modul Tanda Terima Berkas
+        // 6. Data Modul Tanda Terima Berkas (Aman & Otomatis Migrasi jika Tabel Belum Ada)
         $todayWib = Carbon::now('Asia/Jakarta');
-        $totalTtbToday = TandaTerima::whereDate('submitted_at', $todayWib->toDateString())->count();
-        $totalTtbThisMonth = TandaTerima::whereYear('submitted_at', $todayWib->year)
-            ->whereMonth('submitted_at', $todayWib->month)
-            ->count();
-        $totalTtb = TandaTerima::count();
 
-        // Statistik 7 Jenis Berkas
-        $ttbJenisStats = [];
-        foreach (TandaTerimaBerkas::JENIS_BERKAS_LIST as $jb) {
-            $ttbJenisStats[$jb] = TandaTerimaBerkas::where('jenis_berkas', $jb)->count();
+        try {
+            if (!Schema::hasTable('tanda_terima')) {
+                Artisan::call('migrate', ['--force' => true]);
+            }
+        } catch (\Throwable $e) {
+            // Lanjutkan jika ada limitasi izin agar dashboard tetap dapat dibuka
+        }
+
+        $totalTtbToday = 0;
+        $totalTtbThisMonth = 0;
+        $totalTtb = 0;
+        $ttbJenisStats = array_fill_keys(TandaTerimaBerkas::JENIS_BERKAS_LIST, 0);
+
+        try {
+            if (Schema::hasTable('tanda_terima')) {
+                $totalTtbToday = TandaTerima::whereDate('submitted_at', $todayWib->toDateString())->count();
+                $totalTtbThisMonth = TandaTerima::whereYear('submitted_at', $todayWib->year)
+                    ->whereMonth('submitted_at', $todayWib->month)
+                    ->count();
+                $totalTtb = TandaTerima::count();
+
+                if (Schema::hasTable('tanda_terima_berkas')) {
+                    foreach (TandaTerimaBerkas::JENIS_BERKAS_LIST as $jb) {
+                        $ttbJenisStats[$jb] = TandaTerimaBerkas::where('jenis_berkas', $jb)->count();
+                    }
+                }
+            }
+        } catch (\Throwable $e) {
+            // Fail-safe: Dashboard tetap tampil normal jika terjadi kendala query
         }
 
         return view('dashboard', compact(

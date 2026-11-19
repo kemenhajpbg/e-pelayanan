@@ -11,9 +11,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        /* Standar Kertas Thermal 80mm */
+        /* Standar Kertas Thermal 58mm */
         @page {
-            size: 80mm auto;
+            size: 58mm auto;
             margin: 2mm 3mm;
         }
 
@@ -35,8 +35,8 @@
 
         /* Container Struk Thermal 80mm */
         .thermal-ticket {
-            width: 78mm;
-            max-width: 78mm;
+            width: 58mm;
+            max-width: 58mm;
             margin: 0 auto;
             background: #ffffff;
             padding: 5mm 4mm;
@@ -46,7 +46,7 @@
 
         /* Tombol Aksi Layar (Disembunyikan saat cetak) */
         .no-print {
-            max-width: 78mm;
+            max-width: 58mm;
             margin: 0 auto 12px auto;
             display: flex;
             gap: 8px;
@@ -268,6 +268,12 @@
             <h3 class="doc-title">TANDA TERIMA BERKAS</h3>
         </div>
 
+        <!-- Office Phone -->
+        <div class="info-row">
+            <div class="info-label">Telepon Kantor:</div>
+            <div class="info-value">082225020837</div>
+        </div>
+
         <div class="divider"></div>
 
         <!-- NOMOR TANDA TERIMA -->
@@ -334,7 +340,7 @@
         <!-- PETUGAS PELAYANAN -->
         <div class="info-row" style="text-align: center;">
             <div class="info-label">Petugas:</div>
-            <div class="info-value">{{ $tandaTerima->petugas ? $tandaTerima->petugas->name : 'Admin Pelayanan' }}</div>
+            <div class="info-value">{{ Auth::user()->name }}</div>
         </div>
 
         <!-- QR CODE VERIFIKASI -->

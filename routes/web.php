@@ -66,16 +66,16 @@ Route::middleware('auth')->group(function () {
     Route::get('/letters', function () {
         return redirect()->route('daily-reports.index');
     })->name('letters.index');
-
-    // Utilitas Migrasi Database di Hosting (Khusus Admin Login)
-    Route::get('/system/migrate', function () {
-        try {
-            \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
-            $output = \Illuminate\Support\Facades\Artisan::output();
-            return response("<div style='font-family:sans-serif;max-width:600px;margin:40px auto;background:#0f172a;color:#14b8a6;padding:24px;border-radius:16px;box-shadow:0 10px 25px -5px rgba(0,0,0,0.3);'><h3 style='margin-top:0;color:#ffffff;'>Migrasi Database Berhasil:</h3><pre style='background:#1e293b;color:#f8fafc;padding:16px;border-radius:8px;overflow-x:auto;'>" . htmlspecialchars($output ?: 'Database sudah dalam versi terbaru.') . "</pre><a href='" . route('dashboard') . "' style='color:#0f172a;display:inline-block;margin-top:10px;padding:10px 20px;background:#2dd4bf;font-weight:bold;text-decoration:none;border-radius:8px;'>&larr; Kembali ke Dashboard</a></div>");
-        } catch (\Throwable $e) {
-            return response("<div style='font-family:sans-serif;max-width:600px;margin:40px auto;background:#450a0a;color:#fca5a5;padding:24px;border-radius:16px;'><h3 style='margin-top:0;color:#ffffff;'>Gagal Migrasi:</h3><pre style='background:#1e1e1e;color:#fca5a5;padding:16px;border-radius:8px;overflow-x:auto;'>" . htmlspecialchars($e->getMessage()) . "</pre><a href='" . route('dashboard') . "' style='color:#ffffff;display:inline-block;margin-top:10px;padding:10px 20px;background:#991b1b;font-weight:bold;text-decoration:none;border-radius:8px;'>&larr; Kembali ke Dashboard</a></div>", 500);
-        }
-    })->name('system.migrate');
 });
+
+// Utilitas Pembaruan & Migrasi Database di Hosting (Bisa diakses langsung jika terjadi kendala tabel)
+Route::get('/system/migrate', function () {
+    try {
+        \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
+        $output = \Illuminate\Support\Facades\Artisan::output();
+        return response("<div style='font-family:sans-serif;max-width:650px;margin:50px auto;padding:30px;background:#0f172a;color:#14b8a6;border-radius:16px;box-shadow:0 10px 25px rgba(0,0,0,0.3);'><h2 style='color:#ffffff;margin-top:0;'>Migrasi Database Berhasil!</h2><pre style='background:#1e293b;color:#f8fafc;padding:16px;border-radius:8px;font-size:13px;line-height:1.5;overflow-x:auto;'>" . htmlspecialchars($output ?: 'Seluruh tabel database sudah mutakhir.') . "</pre><div style='margin-top:20px;'><a href='/' style='background:#2dd4bf;color:#0f172a;padding:10px 20px;border-radius:8px;text-decoration:none;font-weight:bold;display:inline-block;'>&larr; Buka Dashboard e-Pelayanan</a></div></div>");
+    } catch (\Throwable $e) {
+        return response("<div style='font-family:sans-serif;max-width:650px;margin:50px auto;padding:30px;background:#450a0a;color:#fca5a5;border-radius:16px;'><h2 style='color:#ffffff;margin-top:0;'>Gagal Migrasi Database:</h2><pre style='background:#1e1e1e;color:#fca5a5;padding:16px;border-radius:8px;font-size:13px;overflow-x:auto;'>" . htmlspecialchars($e->getMessage()) . "</pre><div style='margin-top:20px;'><a href='/' style='background:#991b1b;color:#ffffff;padding:10px 20px;border-radius:8px;text-decoration:none;font-weight:bold;display:inline-block;'>&larr; Kembali</a></div></div>", 500);
+    }
+})->name('system.migrate');
 

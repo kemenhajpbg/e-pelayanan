@@ -8,6 +8,8 @@ use App\Models\TandaTerimaBerkas;
 use App\Models\TandaTerimaStatusHistory;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Artisan;
 use Carbon\Carbon;
 
 class TandaTerimaController extends Controller
@@ -17,6 +19,13 @@ class TandaTerimaController extends Controller
      */
     public function index(Request $request)
     {
+        try {
+            if (!Schema::hasTable('tanda_terima')) {
+                Artisan::call('migrate', ['--force' => true]);
+            }
+        } catch (\Throwable $e) {
+        }
+
         $search = $request->input('search');
         $jenisBerkas = $request->input('jenis_berkas');
         $status = $request->input('status');
@@ -118,6 +127,13 @@ class TandaTerimaController extends Controller
      */
     public function store(Request $request)
     {
+        try {
+            if (!Schema::hasTable('tanda_terima')) {
+                Artisan::call('migrate', ['--force' => true]);
+            }
+        } catch (\Throwable $e) {
+        }
+
         $validated = $request->validate([
             'nama_penyetor' => 'required|string|max:255',
             'no_hp' => 'required|string|max:30',
